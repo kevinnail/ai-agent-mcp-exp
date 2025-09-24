@@ -26,12 +26,6 @@ function Home() {
               Go to Auth
             </Link>
           </div>
-
-          <div className="feature-card">
-            <h3>Dashboard</h3>
-            <p>Main application dashboard (coming soon)</p>
-            <div className="feature-link disabled">Dashboard</div>
-          </div>
         </div>
       </main>
     </div>
