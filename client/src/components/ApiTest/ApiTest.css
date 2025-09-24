@@ -1,0 +1,60 @@
+.api-test {
+  padding: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.api-test h2 {
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.api-test-content {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+}
+
+.loading {
+  color: #007bff;
+  font-style: italic;
+}
+
+.error {
+  color: #dc3545;
+}
+
+.error p {
+  margin-bottom: 15px;
+}
+
+.success {
+  color: #28a745;
+}
+
+.success p {
+  margin-bottom: 15px;
+  font-weight: 500;
+}
+
+.retry-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.retry-btn:hover {
+  background-color: #0056b3;
+}
+
+.retry-btn:active {
+  transform: translateY(1px);
+}

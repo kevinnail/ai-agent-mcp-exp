@@ -1,0 +1,58 @@
+.auth-test-container {
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 2rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  text-align: center;
+  color: white;
+}
+
+.auth-toggle {
+  display: flex;
+  margin-bottom: 1rem;
+}
+
+.auth-toggle button {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  background: #f5f5f5;
+  cursor: pointer;
+}
+
+.auth-toggle button.active {
+  background: #007bff;
+  color: white;
+}
+
+.auth-test-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.auth-test-container input {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.auth-test-container button {
+  padding: 0.5rem 1rem;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.auth-test-container button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.sign-out-btn {
+  background: #dc3545;
+  margin-top: 1rem;
+}
