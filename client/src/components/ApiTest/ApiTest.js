@@ -5,6 +5,7 @@ function ApiTest() {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [tools, setTools] = useState();
 
   useEffect(() => {
     // Test API connection
@@ -17,6 +18,7 @@ function ApiTest() {
       })
       .then((data) => {
         setMessage(data.message);
+        setTools(data.tools);
         setLoading(false);
       })
       .catch((err) => {
@@ -30,7 +32,7 @@ function ApiTest() {
     setLoading(true);
     setError(null);
     setMessage('');
-    
+
     fetch('http://localhost:5000/api/v1/api/hello')
       .then((res) => {
         if (!res.ok) {
@@ -64,7 +66,15 @@ function ApiTest() {
         )}
         {message && !loading && !error && (
           <div className="success">
+            <p>API Response: </p>
             <p>API Response: {message}</p>
+            <h1>Available Tools: </h1>
+            {tools.map((tool) => (
+              <>
+                {' '}
+                <p key={tool.name}>{tool.name}</p>
+              </>
+            ))}
             <button onClick={handleRetry} className="retry-btn">
               Test Again
             </button>
