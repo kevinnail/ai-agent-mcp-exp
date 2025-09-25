@@ -12,8 +12,8 @@ app.use(
   cors({
     origin: ['http://localhost:3000'],
     credentials: true,
-    // exposedHeaders: ['Mcp-Session-Id'],
-    // allowedHeaders: ['Content-Type', 'Mcp-Session-Id'],
+    exposedHeaders: ['Mcp-Session-Id'],
+    allowedHeaders: ['Content-Type', 'Mcp-Session-Id'],
   })
 );
 
