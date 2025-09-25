@@ -66,15 +66,18 @@ function ApiTest() {
         )}
         {message && !loading && !error && (
           <div className="success">
-            <p>API Response: </p>
-            <p>API Response: {message}</p>
-            <h1>Available Tools: </h1>
-            {tools.map((tool) => (
-              <>
-                {' '}
-                <p key={tool.name}>{tool.name}</p>
-              </>
-            ))}
+            <h2 style={{ textAlign: 'left' }}>API Response: </h2>
+            <p style={{ width: '50%', margin: '1rem auto', textAlign: 'left' }}>
+              {message}
+            </p>
+            <h2 style={{ textAlign: 'left' }}>Available Tools: </h2>
+            <ul
+              style={{ width: '50%', margin: '1rem auto', textAlign: 'left' }}
+            >
+              {tools.map((tool) => (
+                <li key={tool.name}>{tool.name}</li>
+              ))}
+            </ul>
             <button onClick={handleRetry} className="retry-btn">
               Test Again
             </button>
