@@ -1,3 +1,29 @@
+const MCP_SERVER_URL = process.env.MCP_SERVER_URL;
+
+function extractFromSSEChunk(chunk, extractFn) {
+  const lines = chunk.split('\n');
+  for (const line of lines) {
+    if (line.startsWith('data:')) {
+      const jsonStr = line.slice(5).trim();
+      if (jsonStr === '[DONE]') {
+        return { done: true };
+      }
+      if (jsonStr) {
+        try {
+          const event = JSON.parse(jsonStr);
+          const result = extractFn(event);
+          if (result !== null) {
+            return { data: result };
+          }
+        } catch (err) {
+          console.error('Bad JSON in SSE chunk:', err, jsonStr);
+        }
+      }
+    }
+  }
+  return null;
+}
+
 async function getMcpSessionId() {
   try {
     const response = await fetch(`${MCP_SERVER_URL}/mcp`, {
