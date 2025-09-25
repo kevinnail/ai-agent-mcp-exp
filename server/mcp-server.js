@@ -18,44 +18,104 @@ function createServer() {
     version: '1.0.0',
   });
 
+  // Example tool using Zod schema validation
   server.tool(
-    'name_of_tool',
-    'Description of what tool does',
+    'echo_message',
+    'Echo back a message with optional formatting',
     {
-      title: z.string().describe('Event title'),
-      startDateTime: z.string().describe('Start time in ISO 8601 format'),
-      endDateTime: z.string().describe('End time in ISO 8601 format'),
-      description: z.string().optional().describe('Event description'),
-      location: z.string().optional().describe('Event location'),
-      attendees: z.array(z.string()).optional().describe('Attendee emails'),
-      userId: z.string().optional().describe('User ID'),
+      message: z.string().describe('Message to echo back'),
+      uppercase: z.boolean().optional().describe('Convert to uppercase'),
+      repeat: z
+        .number()
+        .min(1)
+        .max(5)
+        .optional()
+        .describe('Number of times to repeat (1-5)'),
     },
     async (args) => {
       try {
-        const userId = args.userId;
-        const result = await createCalendarEvent(
-          userId,
-          args,
-          args.title,
-          'MCP Server'
-        );
+        let result = args.message;
+
+        if (args.uppercase) {
+          result = result.toUpperCase();
+        }
+
+        if (args.repeat && args.repeat > 1) {
+          result = Array(args.repeat).fill(result).join(' | ');
+        }
+
         return {
           content: [
             {
               type: 'text',
-              text: `Calendar event created: ${result?.htmlLink || 'Success'}`,
-              calendarEvent: args.title,
-              eventLink: result?.htmlLink,
+              text: `Echo: ${result}`,
             },
           ],
         };
       } catch (error) {
-        console.error('Calendar creation failed:', error);
+        console.error('Echo tool failed:', error);
         return {
           content: [
             {
               type: 'text',
-              text: `Failed to create calendar event: ${error.message}`,
+              text: `Failed to echo message: ${error.message}`,
+            },
+          ],
+        };
+      }
+    }
+  );
+
+  // Another example tool
+  server.tool(
+    'calculate',
+    'Perform basic mathematical calculations',
+    {
+      operation: z
+        .enum(['add', 'subtract', 'multiply', 'divide'])
+        .describe('Mathematical operation'),
+      a: z.number().describe('First number'),
+      b: z.number().describe('Second number'),
+    },
+    async (args) => {
+      try {
+        let result;
+
+        switch (args.operation) {
+          case 'add':
+            result = args.a + args.b;
+            break;
+          case 'subtract':
+            result = args.a - args.b;
+            break;
+          case 'multiply':
+            result = args.a * args.b;
+            break;
+          case 'divide':
+            if (args.b === 0) {
+              throw new Error('Division by zero');
+            }
+            result = args.a / args.b;
+            break;
+          default:
+            throw new Error('Invalid operation');
+        }
+
+        return {
+          content: [
+            {
+              type: 'text',
+              text: `${args.a} ${args.operation} ${args.b} = ${result}`,
+            },
+          ],
+        };
+      } catch (error) {
+        console.error('Calculate tool failed:', error);
+        return {
+          content: [
+            {
+              type: 'text',
+              text: `Calculation failed: ${error.message}`,
             },
           ],
         };
