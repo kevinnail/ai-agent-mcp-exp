@@ -18,7 +18,6 @@ function createServer() {
     version: '1.0.0',
   });
 
-  // Example tool using Zod schema validation
   server.tool(
     'echo_message',
     'Echo back a message with optional formatting',
@@ -66,7 +65,6 @@ function createServer() {
     }
   );
 
-  // Another example tool
   server.tool(
     'calculate',
     'Perform basic mathematical calculations',
@@ -129,6 +127,7 @@ function createServer() {
 app.post('/mcp', async (req, res) => {
   const sessionId = req.headers['mcp-session-id'];
   let transport;
+
   if (sessionId && transports[sessionId]) {
     // Reuse existing session
     transport = transports[sessionId];
