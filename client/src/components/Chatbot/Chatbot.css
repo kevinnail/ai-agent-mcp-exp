@@ -1,12 +1,15 @@
 .chatbot {
-  height: 100%;
-  background: linear-gradient(135deg, #374fb9 0%, #3c00ff 100%);
-  color: white;
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 20px;
+  justify-content: flex-start;
+  padding: 40px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  overflow-y: auto;
+  position: relative;
 }
 
 .chatbot p {
@@ -26,12 +29,13 @@
   justify-content: center;
   padding: 40px;
   width: 100%;
-  max-width: 500px;
+  max-width: 600px;
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 16px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
 }
 
 .message-input {
@@ -87,18 +91,147 @@
   transform: none;
 }
 
+/* Response Display Styles */
+.response-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto 30px auto;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  animation: slideInUp 0.5s ease-out;
+}
+
+.response-header {
+  display: flex;
+  align-items: center;
+  padding: 20px 25px;
+  background: rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.response-icon {
+  font-size: 24px;
+  margin-right: 12px;
+  animation: pulse 2s infinite;
+}
+
+.response-header h3 {
+  color: white;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0;
+  opacity: 0.9;
+}
+
+.response-content {
+  padding: 25px;
+}
+
+.response-text {
+  color: white;
+  line-height: 1.7;
+  font-size: 1rem;
+}
+
+.response-text p {
+  margin: 0 0 16px 0;
+  opacity: 0.9;
+}
+
+.response-text p:last-child {
+  margin-bottom: 0;
+}
+
+/* Animations */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+/* Loading state for response */
+.response-container.loading {
+  opacity: 0.7;
+}
+
+.response-container.loading .response-text {
+  position: relative;
+}
+
+.response-container.loading .response-text::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.8),
+    transparent
+  );
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
 @media (max-width: 768px) {
   .chatbot {
-    padding: 10px;
+    padding: 20px 10px;
   }
 
   .chatbot-form {
     padding: 20px;
     max-width: 100%;
+    margin-bottom: 20px;
   }
 
   .chatbot p {
     font-size: 1rem;
     margin-bottom: 20px;
+  }
+
+  .response-container {
+    margin: 0 auto 20px auto;
+    max-width: 100%;
+  }
+
+  .response-header {
+    padding: 15px 20px;
+  }
+
+  .response-content {
+    padding: 20px;
+  }
+
+  .response-text {
+    font-size: 0.95rem;
   }
 }
