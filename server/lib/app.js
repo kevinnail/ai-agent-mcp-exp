@@ -3,6 +3,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import users from './controllers/users.js';
 import testApi from './controllers/api.js';
+import chatbot from './controllers/chatbot.js';
 import notFound from './middleware/not-found.js';
 import errorHandler from './middleware/error.js';
 
@@ -12,8 +13,8 @@ app.use(
   cors({
     origin: ['http://localhost:3000'],
     credentials: true,
-    // exposedHeaders: ['Mcp-Session-Id'],
-    // allowedHeaders: ['Content-Type', 'Mcp-Session-Id'],
+    exposedHeaders: ['Mcp-Session-Id'],
+    allowedHeaders: ['Content-Type', 'Mcp-Session-Id'],
   })
 );
 
@@ -21,6 +22,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 // Use the imported routers
+app.use('/api/v1/chatbot', chatbot);
 app.use('/api/v1/users', users);
 app.use('/api/v1/api', testApi);
 

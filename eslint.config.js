@@ -14,6 +14,7 @@ export default [
         ...globals.browser,
         ...globals.node,
         ...globals.jest,
+        process: 'readonly',
       },
     },
     rules: {
@@ -47,6 +48,15 @@ export default [
     settings: {
       react: {
         version: 'detect',
+      },
+    },
+  },
+  {
+    files: ['client/**/*.{js,jsx}'],
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        process: 'readonly',
       },
     },
   },

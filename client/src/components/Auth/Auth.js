@@ -17,15 +17,14 @@ export default function Auth() {
 
   useEffect(() => {
     if (user) {
-      navigate('/auth-test');
+      navigate('/chatbot');
     }
-  }, [user]);
+  }, [user, navigate]);
 
   const submitAuth = async () => {
     try {
       setLoading(true);
       await logInUser(email, password, type);
-
       toast.success('Successfully signed in!', {
         theme: 'colored',
         draggable: true,
@@ -35,7 +34,7 @@ export default function Auth() {
       });
 
       // Redirect to the page they were trying to access, or home
-      const from = location.state?.from?.pathname || '/auth-test';
+      const from = location.state?.from?.pathname || '/chatbot';
       navigate(from, { replace: true });
     } catch (e) {
       console.error(e);

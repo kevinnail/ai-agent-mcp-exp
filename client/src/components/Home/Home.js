@@ -28,9 +28,15 @@ function Home() {
           </div>
 
           <div className="feature-card">
-            <h3>Dashboard</h3>
-            <p>Main application dashboard (coming soon)</p>
-            <div className="feature-link disabled">Dashboard</div>
+            <h3>Chatbot</h3>
+            <p>
+              Ask the agent what the weather is, or to format your text, or make
+              a calculation to prove that an MCP Server can provide tools to an
+              AI agent.
+            </p>
+            <Link to="/chatbot" className="feature-link">
+              Chatbot
+            </Link>
           </div>
         </div>
       </main>

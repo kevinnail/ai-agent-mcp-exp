@@ -15,12 +15,7 @@ function Navigation() {
           <Link to="/api-test" className="nav-link">
             API Test
           </Link>
-          <Link to="/auth/sign-in" className="nav-link">
-            Sign In
-          </Link>
-          <Link to="/auth/sign-up" className="nav-link">
-            Sign Up
-          </Link>
+
           <Link to="/auth-test" className="nav-link">
             Auth Test
           </Link>
