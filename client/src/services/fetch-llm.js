@@ -1,7 +1,6 @@
 const BASE_URL = process.env.REACT_APP_BASE_URL || '';
 
 export async function sendPrompt(message) {
-  console.log('hi were sending prompts');
   try {
     const resp = await fetch(`${BASE_URL}/api/v1/chatbot`, {
       method: 'POST',

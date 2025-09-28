@@ -78,21 +78,25 @@ function createServer() {
     async (args) => {
       try {
         let result;
-
+        let operationText = '';
         switch (args.operation) {
           case 'add':
             result = args.a + args.b;
+            operationText = '+';
             break;
           case 'subtract':
             result = args.a - args.b;
+            operationText = '-';
             break;
           case 'multiply':
             result = args.a * args.b;
+            operationText = '*';
             break;
           case 'divide':
             if (args.b === 0) {
               throw new Error('Division by zero');
             }
+            operationText = '/';
             result = args.a / args.b;
             break;
           default:
@@ -103,7 +107,7 @@ function createServer() {
           content: [
             {
               type: 'text',
-              text: `${args.a} ${args.operation} ${args.b} = ${result}`,
+              text: `${args.a} ${operationText} ${args.b} = ${result}`,
             },
           ],
         };

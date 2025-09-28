@@ -82,10 +82,20 @@ export default function Chatbot() {
           Ask
         </button>
       </form>{' '}
-      <div style={{ fontSize: '20px', fontWeight: 'bold', margin: '20px' }}>
-        <p>Response</p>
-        <p>{chatReply}</p>
-      </div>
+      {chatReply && (
+        <div className="response-container">
+          <div className="response-header">
+            <h3>AI Response</h3>
+          </div>
+          <div className="response-content">
+            <div className="response-text">
+              {chatReply.split('\n').map((line, index) => (
+                <p key={index}>{line}</p>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

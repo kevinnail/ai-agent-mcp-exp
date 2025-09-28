@@ -99,10 +99,14 @@ ul {
   height: 100vh;
   display: flex;
   flex-direction: column;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  color: white;
 }
 
 .App-main {
   flex: 1;
-  background-color: black;
-  color: white;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
 }
