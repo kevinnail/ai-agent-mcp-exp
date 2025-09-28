@@ -1,24 +1,35 @@
-import { Link } from 'react-router-dom';
 import './Navigation.css';
+import { useUser } from '../../hooks/useUser.js';
+import { signOutUser } from '../../services/fetch-auth.js';
+import { toast } from 'react-toastify';
 
 function Navigation() {
+  const { user, setUser, setLoading } = useUser();
+
+  const handleSignOut = async () => {
+    try {
+      setLoading(true);
+      await signOutUser();
+      setUser(null);
+      toast.success('Successfully signed out!');
+      setLoading(false);
+    } catch (error) {
+      console.error('Sign out error:', error);
+      toast.error(`Sign out failed: ${error.message}`);
+    }
+  };
   return (
     <nav className="App-nav">
       <div className="nav-container">
-        <Link to="/" className="nav-brand">
-          Full-Stack Template
-        </Link>
+        <h1 style={{ margin: '0', color: 'white' }}>
+          AI Agent: weather | calculation | format input
+        </h1>
         <div className="nav-links">
-          <Link to="/" className="nav-link">
-            Home
-          </Link>
-          <Link to="/api-test" className="nav-link">
-            API Test
-          </Link>
-
-          <Link to="/auth-test" className="nav-link">
-            Auth Test
-          </Link>
+          {user && (
+            <button onClick={handleSignOut} className="sign-out-btn">
+              Sign Out
+            </button>
+          )}
         </div>
       </div>
     </nav>

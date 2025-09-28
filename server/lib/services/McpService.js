@@ -81,27 +81,31 @@ export async function getToolsFromMcpServer() {
     let buffer = '';
     let tools = [];
 
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      buffer += decoder.decode(value, { stream: true });
-      const parts = buffer.split('\n\n');
-      buffer = parts.pop() || '';
+    let done = false;
+    while (!done) {
+      const result = await reader.read();
+      done = result.done;
 
-      for (const part of parts) {
-        const result = extractFromSSEChunk(part, (event) => {
-          if (event.result?.tools) {
-            return event.result.tools;
+      if (!done) {
+        buffer += decoder.decode(result.value, { stream: true });
+        const parts = buffer.split('\n\n');
+        buffer = parts.pop() || '';
+
+        for (const part of parts) {
+          const chunkResult = extractFromSSEChunk(part, (event) => {
+            if (event.result?.tools) {
+              return event.result.tools;
+            }
+            console.info('Other event:', event);
+            return null;
+          });
+
+          if (chunkResult?.done) {
+            return tools;
           }
-          console.info('Other event:', event);
-          return null;
-        });
-
-        if (result?.done) {
-          return tools;
-        }
-        if (result?.data) {
-          tools = result.data;
+          if (chunkResult?.data) {
+            tools = chunkResult.data;
+          }
         }
       }
     }
@@ -116,10 +120,22 @@ export async function executeToolViaMcp(toolCall) {
   try {
     const sessionId = await getMcpSessionId();
 
-    const args =
-      typeof toolCall.function.arguments === 'string'
-        ? JSON.parse(toolCall.function.arguments)
-        : toolCall.function.arguments;
+    const args = toolCall.function.arguments;
+
+    // Convert string arguments to numbers dynamically
+    const convertedArgs = {};
+    for (const [key, value] of Object.entries(args)) {
+      // Only convert if the value is a string that represents a valid number
+      if (
+        typeof value === 'string' &&
+        !isNaN(value) &&
+        !isNaN(parseFloat(value))
+      ) {
+        convertedArgs[key] = Number(value);
+      } else {
+        convertedArgs[key] = value; // Keep original value for non-numeric strings
+      }
+    }
 
     const response = await fetch(`${MCP_SERVER_URL}/mcp`, {
       method: 'POST',
@@ -134,7 +150,7 @@ export async function executeToolViaMcp(toolCall) {
         method: 'tools/call',
         params: {
           name: toolCall.function.name,
-          arguments: args,
+          arguments: convertedArgs,
         },
         id: 2,
       }),
@@ -150,31 +166,33 @@ export async function executeToolViaMcp(toolCall) {
     let buffer = '';
     let result = null;
 
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
+    let done = false;
+    while (!done) {
+      const readResult = await reader.read();
+      done = readResult.done;
 
-      buffer += decoder.decode(value, { stream: true });
-      const parts = buffer.split('\n\n');
-      buffer = parts.pop() || '';
+      if (!done) {
+        buffer += decoder.decode(readResult.value, { stream: true });
+        const parts = buffer.split('\n\n');
+        buffer = parts.pop() || '';
 
-      for (const part of parts) {
-        const chunkResult = extractFromSSEChunk(part, (event) => {
-          if (event.result) {
-            return event.result;
+        for (const part of parts) {
+          const chunkResult = extractFromSSEChunk(part, (event) => {
+            if (event.result) {
+              return event.result;
+            }
+            return null;
+          });
+
+          if (chunkResult?.done) {
+            return result;
           }
-          return null;
-        });
-
-        if (chunkResult?.done) {
-          return result;
-        }
-        if (chunkResult?.data) {
-          result = chunkResult.data;
+          if (chunkResult?.data) {
+            result = chunkResult.data;
+          }
         }
       }
     }
-
     return result;
   } catch (error) {
     console.error('MCP tool execution failed:', error);
