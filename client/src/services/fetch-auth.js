@@ -1,7 +1,6 @@
 const BASE_URL = process.env.REACT_APP_BASE_URL || '';
 
 /* Auth related functions */
-
 export async function getUser() {
   try {
     const resp = await fetch(`${BASE_URL}/api/v1/users/me`, {
@@ -51,6 +50,8 @@ export async function signUpUser(email, password) {
 
 export async function signInUser(email, password) {
   try {
+    console.log(BASE_URL);
+
     const resp = await fetch(`${BASE_URL}/api/v1/users/sessions`, {
       method: 'POST',
       headers: {
