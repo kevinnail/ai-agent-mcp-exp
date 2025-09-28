@@ -118,7 +118,6 @@ Always provide clear, helpful responses and use the tools when they would be ben
       formattedMessage = 'No tool calls were executed.';
     }
 
-    console.log('resultArray', resultArray);
     res.json({ message: formattedMessage });
   } catch (e) {
     console.error(e);

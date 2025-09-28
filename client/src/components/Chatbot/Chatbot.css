@@ -18,7 +18,7 @@
   opacity: 0.9;
   text-align: center;
   margin-bottom: 30px;
-  max-width: 600px;
+  max-width: 1000px;
   line-height: 1.6;
 }
 
@@ -27,15 +27,21 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 40px;
+  padding: 20px 40px;
   width: 100%;
-  max-width: 600px;
+  max-width: 1000px;
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 16px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
   margin-bottom: 30px;
+}
+.chatbot-form p {
+  text-align: left;
+  font-size: 1.3rem;
+  max-width: 600px;
+  margin: 0 0 1rem 0;
 }
 
 .message-input {
@@ -94,7 +100,7 @@
 /* Response Display Styles */
 .response-container {
   width: 100%;
-  max-width: 600px;
+  max-width: 1000px;
   margin: 0 auto 30px auto;
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
@@ -138,6 +144,7 @@
 }
 
 .response-text p {
+  text-align: left;
   margin: 0 0 16px 0;
   opacity: 0.9;
 }
