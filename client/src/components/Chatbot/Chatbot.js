@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import './Chatbot.css';
+import { sendPrompt } from '../../services/fetch-llm.js';
 
 export default function Chatbot() {
   const textareaRef = useRef(null);
@@ -7,12 +8,14 @@ export default function Chatbot() {
   const [loading, setLoading] = useState(false);
 
   function handleSend() {
+    console.log('hello?');
     setLoading(true);
-    // TODO: Send message to backend
+    sendPrompt();
     setLoading(false);
   }
 
   function onInputChange(e) {
+    e.preventDefault();
     const newInput = e.target.value;
     setInput(newInput);
   }
@@ -38,10 +41,11 @@ export default function Chatbot() {
 
   return (
     <div className="chatbot">
-      <form className="chatbot-form">
+      <form className="chatbot-form" onSubmit={handleSend}>
         <p>
           This is a chatbot. that is purely for demonstrating how it can access
-          tools via and MCP Server using HTTP SSE for streaming responses.
+          tools via and MCP Server using HTTP SSE for streaming
+          responses.asdfasdfasfsadf
         </p>
         <textarea
           ref={textareaRef}
