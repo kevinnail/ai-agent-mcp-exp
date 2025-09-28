@@ -7,15 +7,23 @@ export default function Chatbot() {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
 
-  function handleSend() {
+  async function handleSend(e) {
+    e.preventDefault();
+    if (!input.trim()) return;
+
     console.log('hello?');
     setLoading(true);
-    sendPrompt();
-    setLoading(false);
+    try {
+      await sendPrompt(input);
+      setInput('');
+    } catch (error) {
+      console.error('Error sending prompt:', error);
+    } finally {
+      setLoading(false);
+    }
   }
 
   function onInputChange(e) {
-    e.preventDefault();
     const newInput = e.target.value;
     setInput(newInput);
   }
@@ -60,7 +68,7 @@ export default function Chatbot() {
           onKeyDown={(e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
               e.preventDefault();
-              handleSend();
+              handleSend(e);
             }
             // If Shift+Enter is pressed, allow default behavior (new line)
           }}
