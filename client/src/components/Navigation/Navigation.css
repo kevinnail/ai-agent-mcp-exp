@@ -16,38 +16,21 @@
   padding: 1rem 2rem;
 }
 
-.nav-brand {
-  color: #61dafb;
-  text-decoration: none;
-  font-size: 1.5rem;
-  font-weight: bold;
-  transition: color 0.3s ease;
-}
-
-.nav-brand:hover {
-  color: #21a0c4;
-}
-
-.nav-links {
-  display: flex;
-  gap: 2rem;
-}
-
-.nav-link {
-  color: white;
-  text-decoration: none;
+.sign-out-btn {
+  background-color: #3c10ff;
+  color: black;
+  border-radius: 15px;
   padding: 0.5rem 1rem;
-  border-radius: 4px;
-  transition: all 0.3s ease;
   font-weight: 500;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: none;
+  color: rgb(255, 255, 255);
+  border: 1px solid #ffffff77;
 }
 
-.nav-link:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #61dafb;
-}
+/*^ Responsive navigation  =====================================*/
 
-/* Responsive navigation */
 @media (max-width: 768px) {
   .nav-container {
     flex-direction: column;
