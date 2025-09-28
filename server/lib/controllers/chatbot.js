@@ -37,6 +37,8 @@ Always provide clear, helpful responses and use the tools when they would be ben
   const controller = new AbortController();
   const clientTimeout = setTimeout(() => controller.abort(), 20 * 60 * 1000); // 20m
 
+  let resultArray = [];
+
   try {
     const payload = {
       model: process.env.OLLAMA_MODEL,
@@ -69,11 +71,10 @@ Always provide clear, helpful responses and use the tools when they would be ben
     //     : JSON.stringify(data);
 
     const toolsCalled = data.message?.tool_calls || [];
+
+    // Process all tool calls and collect results
     for (const call of toolsCalled) {
-      // eslint-disable-next-line no-console
-      console.log(' Individual tool call:', JSON.stringify(call, null, 2));
       try {
-        // if (call.function && call.function.name === 'create_calendar_event') {
         if (call.function) {
           let args = call.function.arguments;
           // Parse arguments if they're a string
@@ -89,32 +90,45 @@ Always provide clear, helpful responses and use the tools when they would be ben
             }
           }
 
-          mcpResult = await executeToolViaMcp(call);
+          const toolResult = await executeToolViaMcp(call);
+          if (toolResult) {
+            resultArray.push({
+              tool: call.function.name,
+              result: toolResult,
+            });
+          }
         } else {
-          // eslint-disable-next-line no-console
           console.log('⚠️ Unknown tool call structure or function name');
         }
       } catch (error) {
         console.error('❌ Error invoking tool call:', error);
-
-        // Check if this is a token expiration error
-        if (
-          error.message &&
-          error.message.includes(
-            'User does not have valid Google Calendar tokens'
-          )
-        ) {
-          console.info(
-            '🔑 Google Calendar token expired - this will be handled by the UI'
-          );
-          // Don't throw here, just log and continue - the UI will handle the token refresh
-        }
+        // Continue processing other tool calls even if one fails
       }
     }
+
+    // Format the response for the frontend
+    let formattedMessage = '';
+    if (resultArray.length > 0) {
+      formattedMessage = resultArray
+        .map((item) => {
+          if (item.tool === 'calculate' && item.result?.content?.[0]?.text) {
+            return `Calculation result: ${item.result.content[0].text}`;
+          }
+          if (item.tool === 'echo_message' && item.result?.content?.[0]?.text) {
+            return `Echo: ${item.result.content[0].text}`;
+          }
+          return `Tool ${item.tool} result: ${JSON.stringify(item.result)}`;
+        })
+        .join('\n\n');
+    } else {
+      formattedMessage = 'No tool calls were executed.';
+    }
+
+    console.log('resultArray', resultArray);
+    res.json({ message: formattedMessage });
   } catch (e) {
     console.error(e);
   }
-  res.json({ message: mcpResult.content[0].text });
 });
 
 export default router;

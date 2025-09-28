@@ -122,19 +122,26 @@ export async function executeToolViaMcp(toolCall) {
 
     const args = toolCall.function.arguments;
 
-    // Convert string arguments to numbers dynamically
     const convertedArgs = {};
-    for (const [key, value] of Object.entries(args)) {
-      // Only convert if the value is a string that represents a valid number
-      if (
-        typeof value === 'string' &&
-        !isNaN(value) &&
-        !isNaN(parseFloat(value))
-      ) {
-        convertedArgs[key] = Number(value);
-      } else {
-        convertedArgs[key] = value; // Keep original value for non-numeric strings
+
+    if (toolCall.function.name === 'calculate') {
+      // Convert string arguments to numbers dynamically
+      for (const [key, value] of Object.entries(args)) {
+        // Only convert if the value is a string that represents a valid number
+        if (
+          typeof value === 'string' &&
+          !isNaN(value) &&
+          !isNaN(parseFloat(value))
+        ) {
+          convertedArgs[key] = Number(value);
+        } else {
+          convertedArgs[key] = value; // Keep original value for non-numeric strings
+        }
       }
+    } else if (toolCall.function.name === 'echo_message') {
+      const args = toolCall.function.arguments;
+      args.repeat = Number(args.repeat);
+      args.uppercase = Boolean(args.uppercase);
     }
 
     const response = await fetch(`${MCP_SERVER_URL}/mcp`, {
@@ -150,7 +157,8 @@ export async function executeToolViaMcp(toolCall) {
         method: 'tools/call',
         params: {
           name: toolCall.function.name,
-          arguments: convertedArgs,
+          arguments:
+            toolCall.function.name === 'calculate' ? convertedArgs : args,
         },
         id: 2,
       }),
