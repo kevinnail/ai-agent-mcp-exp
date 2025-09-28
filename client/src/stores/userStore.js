@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 import { getUser } from '../services/fetch-auth.js';
 import { authUser } from '../services/auth.js';
-import process from 'process';
 
 const googleId = process.env.REACT_APP_GOOGLE_USER_ID;
 
