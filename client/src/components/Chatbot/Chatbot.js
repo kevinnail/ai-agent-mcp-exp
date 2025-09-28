@@ -6,15 +6,21 @@ export default function Chatbot() {
   const textareaRef = useRef(null);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [chatReply, setChatReply] = useState('');
 
   async function handleSend(e) {
     e.preventDefault();
     if (!input.trim()) return;
 
-    console.log('hello?');
     setLoading(true);
     try {
-      await sendPrompt(input);
+      const response = await sendPrompt(input);
+
+      if (response.message) {
+        setChatReply(response.message);
+      } else {
+        throw new Error('Failed to send prompt');
+      }
       setInput('');
     } catch (error) {
       console.error('Error sending prompt:', error);
@@ -52,8 +58,7 @@ export default function Chatbot() {
       <form className="chatbot-form" onSubmit={handleSend}>
         <p>
           This is a chatbot. that is purely for demonstrating how it can access
-          tools via and MCP Server using HTTP SSE for streaming
-          responses.asdfasdfasfsadf
+          tools via and MCP Server using HTTP SSE for streaming responses.
         </p>
         <textarea
           ref={textareaRef}
@@ -76,7 +81,11 @@ export default function Chatbot() {
         <button className="ask-button" type="submit">
           Ask
         </button>
-      </form>
+      </form>{' '}
+      <div style={{ fontSize: '20px', fontWeight: 'bold', margin: '20px' }}>
+        <p>Response</p>
+        <p>{chatReply}</p>
+      </div>
     </div>
   );
 }
