@@ -8,7 +8,6 @@ const router = express.Router();
 
 // Sample API endpoint
 router.post('/', async (req, res) => {
-  let mcpResult = null;
   const mcpTools = await getToolsFromMcpServer();
   const userPrompt = req.body.message;
   const systemPrompt = `You are an AI assistant with access to the following tools:
@@ -65,11 +64,6 @@ Always provide clear, helpful responses and use the tools when they would be ben
     }
 
     const data = await response.json();
-    // const raw =
-    //   data.message && typeof data.message.content === 'string'
-    //     ? data.message.content.trim()
-    //     : JSON.stringify(data);
-
     const toolsCalled = data.message?.tool_calls || [];
 
     // Process all tool calls and collect results
@@ -115,7 +109,7 @@ Always provide clear, helpful responses and use the tools when they would be ben
             return `Calculation result: ${item.result.content[0].text}`;
           }
           if (item.tool === 'echo_message' && item.result?.content?.[0]?.text) {
-            return `Echo: ${item.result.content[0].text}`;
+            return `${item.result.content[0].text}`;
           }
           return `Tool ${item.tool} result: ${JSON.stringify(item.result)}`;
         })
