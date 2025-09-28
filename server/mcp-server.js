@@ -47,7 +47,7 @@ function createServer() {
           content: [
             {
               type: 'text',
-              text: `Echo: ${result}`,
+              text: `${result}`,
             },
           ],
         };
@@ -76,6 +76,7 @@ function createServer() {
       b: z.number().describe('Second number'),
     },
     async (args) => {
+      console.log('args', args);
       try {
         let result;
         let operationText = '';
