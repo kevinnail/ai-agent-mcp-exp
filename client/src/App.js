@@ -9,6 +9,7 @@ import AuthTest from './components/AuthTest/AuthTest';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute.js';
 import { useUserStore } from './stores/userStore';
 import { ToastContainer } from 'react-toastify';
+import Chatbot from './components/Chatbot/Chatbot.js';
 
 export default function App() {
   const fetchUser = useUserStore((state) => state.fetchUser);
@@ -29,6 +30,14 @@ export default function App() {
             <Route path="/auth/:type" element={<Auth />} />
             <Route path="/" element={<Home />} />
             <Route path="/api-test" element={<ApiTest />} />
+            <Route
+              path="/chatbot"
+              element={
+                <ProtectedRoute>
+                  <Chatbot />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/auth-test"
               element={
