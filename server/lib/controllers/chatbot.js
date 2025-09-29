@@ -19,7 +19,22 @@ router.post('/', async (req, res) => {
    - Parameters: operation (add/subtract/multiply/divide), a (number), b (number)
    - Use this for arithmetic operations
 
-When users ask for calculations or want to echo/format messages, use the appropriate tool. 
+3. **get_alerts** - Get weather alerts for a state
+   - Parameters: state (2-letter state code like CA, NY)
+   - Use this to get active weather alerts for a US state
+
+4. **get_weather_for_city** - Get weather forecast for any city by name
+   - Parameters: city (string) - City name or address (e.g., "Eugene Oregon", "Tokyo Japan")
+   - Use this for ALL weather requests - it handles geocoding automatically
+   - Works for any city worldwide
+
+5. **get_forecast** - Get weather forecast for specific coordinates (DEPRECATED)
+   - Parameters: latitude (number -90 to 90), longitude (number -180 to 180), location_name (string, optional)
+   - DO NOT USE THIS TOOL - use get_weather_for_city instead
+
+CRITICAL: For ANY weather request, ALWAYS use get_weather_for_city with the city name. DO NOT use get_forecast.
+
+When users ask for calculations, weather information, or want to echo/format messages, use the appropriate tool. 
 Always provide clear, helpful responses and use the tools when they would be beneficial to the user's request.
 `;
 
@@ -57,6 +72,7 @@ Always provide clear, helpful responses and use the tools when they would be ben
       body: JSON.stringify(payload),
       signal: controller.signal,
     });
+
     clearTimeout(clientTimeout);
     if (!response.ok) {
       const errBody = await response.text();
@@ -111,6 +127,15 @@ Always provide clear, helpful responses and use the tools when they would be ben
           if (item.tool === 'echo_message' && item.result?.content?.[0]?.text) {
             return `${item.result.content[0].text}`;
           }
+          if (
+            item.tool === 'get_weather_for_city' &&
+            item.result?.content?.[0]?.text
+          ) {
+            return `${item.result.content[0].text}`;
+          }
+          if (item.tool === 'get_alerts' && item.result?.content?.[0]?.text) {
+            return `Weather Alerts:\n${item.result.content[0].text}`;
+          }
           return `Tool ${item.tool} result: ${JSON.stringify(item.result)}`;
         })
         .join('\n\n');
@@ -122,6 +147,11 @@ Always provide clear, helpful responses and use the tools when they would be ben
   } catch (e) {
     console.error(e);
   }
+});
+
+router.get('/tools', async (req, res) => {
+  const mcpTools = await getToolsFromMcpServer();
+  res.json(mcpTools);
 });
 
 export default router;
