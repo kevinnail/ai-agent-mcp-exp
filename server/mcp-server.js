@@ -184,7 +184,6 @@ function createServer() {
             'User-Agent': USER_AGENT,
           },
         });
-
         if (!geocodeResponse.ok) {
           throw new Error(`Geocoding API error: ${geocodeResponse.status}`);
         }
@@ -433,6 +432,5 @@ app.listen(PORT, (error) => {
     process.exit(1);
   }
 
-  // eslint-disable-next-line no-console
-  console.log(`MCP HTTP Server listening on port ${PORT}`);
+  console.info(`MCP HTTP Server listening on port ${PORT}`);
 });

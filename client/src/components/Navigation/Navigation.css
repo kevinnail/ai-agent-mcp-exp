@@ -20,7 +20,7 @@
 }
 
 .sign-out-btn {
-  background-color: #3c10ff;
+  background-color: #16213e;
   color: black;
   border-radius: 15px;
   padding: 0.5rem 1rem;
@@ -29,6 +29,12 @@
   cursor: pointer;
   border: none;
   color: rgb(255, 255, 255);
+  border: 1px solid #ffffff77;
+}
+
+.sign-out-btn:hover {
+  background-color: rgb(192, 192, 192);
+  color: black;
   border: 1px solid #ffffff77;
 }
 
