@@ -188,19 +188,21 @@ export default function WeatherDisplay({ response }) {
             {groupedForecast.map((dayGroup, index) => (
               <div key={index} className="forecast-day-group">
                 {/* Day card */}
-                <div className="forecast-card forecast-day">
-                  <div className="forecast-header">
-                    <div className="forecast-period">{dayGroup.day.name}</div>
-                    <div className="forecast-icon">
-                      {getWeatherIcon(dayGroup.day.forecast)}
+                {dayGroup.day && (
+                  <div className="forecast-card forecast-day">
+                    <div className="forecast-header">
+                      <div className="forecast-period">{dayGroup.day.name}</div>
+                      <div className="forecast-icon">
+                        {getWeatherIcon(dayGroup.day.forecast)}
+                      </div>
                     </div>
+                    <div className="forecast-temp">
+                      {dayGroup.day.temperature}
+                    </div>
+                    <div className="forecast-wind">{dayGroup.day.wind}</div>
+                    <div className="forecast-desc">{dayGroup.day.forecast}</div>
                   </div>
-                  <div className="forecast-temp">
-                    {dayGroup.day.temperature}
-                  </div>
-                  <div className="forecast-wind">{dayGroup.day.wind}</div>
-                  <div className="forecast-desc">{dayGroup.day.forecast}</div>
-                </div>
+                )}
 
                 {/* Night card */}
                 {dayGroup.night && (
