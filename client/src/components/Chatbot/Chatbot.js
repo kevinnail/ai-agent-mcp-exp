@@ -133,10 +133,10 @@ export default function Chatbot() {
         />
         {loading ? (
           <Loading
-            variant="wave"
+            variant="dots"
             text="Processing your request..."
             size="32px"
-            color="#8b5cf6"
+            color="white"
             showText={true}
           />
         ) : (
