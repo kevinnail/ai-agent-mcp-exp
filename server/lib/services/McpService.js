@@ -139,9 +139,15 @@ export async function executeToolViaMcp(toolCall) {
         }
       }
     } else if (toolCall.function.name === 'echo_message') {
-      const args = toolCall.function.arguments;
-      args.repeat = Number(args.repeat);
-      args.uppercase = Boolean(args.uppercase);
+      convertedArgs.message = args.message;
+      convertedArgs.repeat = Number(args.repeat);
+      convertedArgs.uppercase = Boolean(args.uppercase);
+    } else if (toolCall.function.name === 'get_weather_for_city') {
+      // Keep city as string, no conversion needed
+      convertedArgs.city = args.city;
+    } else if (toolCall.function.name === 'get_alerts') {
+      // Keep state as string, no conversion needed
+      convertedArgs.state = args.state;
     }
 
     const response = await fetch(`${MCP_SERVER_URL}/mcp`, {
@@ -158,7 +164,12 @@ export async function executeToolViaMcp(toolCall) {
         params: {
           name: toolCall.function.name,
           arguments:
-            toolCall.function.name === 'calculate' ? convertedArgs : args,
+            toolCall.function.name === 'calculate' ||
+            toolCall.function.name === 'echo_message' ||
+            toolCall.function.name === 'get_weather_for_city' ||
+            toolCall.function.name === 'get_alerts'
+              ? convertedArgs
+              : args,
         },
         id: 2,
       }),
