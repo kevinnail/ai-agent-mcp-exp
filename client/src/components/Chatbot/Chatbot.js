@@ -3,6 +3,7 @@ import './Chatbot.css';
 import { sendPrompt } from '../../services/fetch-llm.js';
 import { toast } from 'react-toastify';
 import WeatherDisplay from '../WeatherDisplay/WeatherDIsplay.js';
+import Loading from '../Loading/Loading.js';
 
 // Helper function to check if response contains weather data
 function isWeatherResponse(text) {
@@ -130,9 +131,19 @@ export default function Chatbot() {
             // If Shift+Enter is pressed, allow default behavior (new line)
           }}
         />
-        <button className="ask-button" type="submit">
-          Ask
-        </button>
+        {loading ? (
+          <Loading
+            variant="wave"
+            text="Processing your request..."
+            size="32px"
+            color="#8b5cf6"
+            showText={true}
+          />
+        ) : (
+          <button className="ask-button" type="submit">
+            Ask
+          </button>
+        )}
       </form>{' '}
       {chatReply && (
         <div className="response-container">

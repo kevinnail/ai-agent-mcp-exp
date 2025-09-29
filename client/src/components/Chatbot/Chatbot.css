@@ -552,24 +552,23 @@
 
 .alert-card:hover {
   background: rgba(255, 255, 255, 0.15);
-  transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 }
 
 .alert-card.alert-minor {
-  border-left: 4px solid #ffc107;
+  border: 3px solid #ffc107;
 }
 
 .alert-card.alert-moderate {
-  border-left: 4px solid #ff9800;
+  border: 3px solid #ff9800;
 }
 
 .alert-card.alert-severe {
-  border-left: 4px solid #f44336;
+  border: 3px solid #f44336;
 }
 
 .alert-card.alert-extreme {
-  border-left: 4px solid #9c27b0;
+  border: 3px solid #9c27b0;
 }
 
 .alert-event {
