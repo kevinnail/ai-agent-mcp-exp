@@ -60,4 +60,17 @@ export default [
       },
     },
   },
+  {
+    files: ['server/**/*.js'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+        ...globals.jest,
+        process: 'readonly',
+      },
+    },
+    rules: {
+      'no-console': ['warn', { allow: ['info', 'error'] }],
+    },
+  },
 ];

@@ -8,7 +8,6 @@ const router = express.Router();
 
 // Sample API endpoint
 router.post('/', async (req, res) => {
-  let mcpResult = null;
   const mcpTools = await getToolsFromMcpServer();
   const userPrompt = req.body.message;
   const systemPrompt = `You are an AI assistant with access to the following tools:
@@ -20,7 +19,22 @@ router.post('/', async (req, res) => {
    - Parameters: operation (add/subtract/multiply/divide), a (number), b (number)
    - Use this for arithmetic operations
 
-When users ask for calculations or want to echo/format messages, use the appropriate tool. 
+3. **get_alerts** - Get weather alerts for a state
+   - Parameters: state (2-letter state code like CA, NY)
+   - Use this to get active weather alerts for a US state
+
+4. **get_weather_for_city** - Get weather forecast for any city by name
+   - Parameters: city (string) - City name or address (e.g., "Eugene Oregon", "Tokyo Japan")
+   - Use this for ALL weather requests - it handles geocoding automatically
+   - Works for any city worldwide
+
+5. **get_forecast** - Get weather forecast for specific coordinates (DEPRECATED)
+   - Parameters: latitude (number -90 to 90), longitude (number -180 to 180), location_name (string, optional)
+   - DO NOT USE THIS TOOL - use get_weather_for_city instead
+
+CRITICAL: For ANY weather request, ALWAYS use get_weather_for_city with the city name. DO NOT use get_forecast.
+
+When users ask for calculations, weather information, or want to echo/format messages, use the appropriate tool. 
 Always provide clear, helpful responses and use the tools when they would be beneficial to the user's request.
 `;
 
@@ -36,6 +50,8 @@ Always provide clear, helpful responses and use the tools when they would be ben
   // Client-side timeout
   const controller = new AbortController();
   const clientTimeout = setTimeout(() => controller.abort(), 20 * 60 * 1000); // 20m
+
+  let resultArray = [];
 
   try {
     const payload = {
@@ -56,6 +72,7 @@ Always provide clear, helpful responses and use the tools when they would be ben
       body: JSON.stringify(payload),
       signal: controller.signal,
     });
+
     clearTimeout(clientTimeout);
     if (!response.ok) {
       const errBody = await response.text();
@@ -63,17 +80,11 @@ Always provide clear, helpful responses and use the tools when they would be ben
     }
 
     const data = await response.json();
-    // const raw =
-    //   data.message && typeof data.message.content === 'string'
-    //     ? data.message.content.trim()
-    //     : JSON.stringify(data);
-
     const toolsCalled = data.message?.tool_calls || [];
+
+    // Process all tool calls and collect results
     for (const call of toolsCalled) {
-      // eslint-disable-next-line no-console
-      console.log(' Individual tool call:', JSON.stringify(call, null, 2));
       try {
-        // if (call.function && call.function.name === 'create_calendar_event') {
         if (call.function) {
           let args = call.function.arguments;
           // Parse arguments if they're a string
@@ -89,32 +100,58 @@ Always provide clear, helpful responses and use the tools when they would be ben
             }
           }
 
-          mcpResult = await executeToolViaMcp(call);
+          const toolResult = await executeToolViaMcp(call);
+          if (toolResult) {
+            resultArray.push({
+              tool: call.function.name,
+              result: toolResult,
+            });
+          }
         } else {
-          // eslint-disable-next-line no-console
           console.log('⚠️ Unknown tool call structure or function name');
         }
       } catch (error) {
         console.error('❌ Error invoking tool call:', error);
-
-        // Check if this is a token expiration error
-        if (
-          error.message &&
-          error.message.includes(
-            'User does not have valid Google Calendar tokens'
-          )
-        ) {
-          console.info(
-            '🔑 Google Calendar token expired - this will be handled by the UI'
-          );
-          // Don't throw here, just log and continue - the UI will handle the token refresh
-        }
+        // Continue processing other tool calls even if one fails
       }
     }
+
+    // Format the response for the frontend
+    let formattedMessage = '';
+    if (resultArray.length > 0) {
+      formattedMessage = resultArray
+        .map((item) => {
+          if (item.tool === 'calculate' && item.result?.content?.[0]?.text) {
+            return `Calculation result: ${item.result.content[0].text}`;
+          }
+          if (item.tool === 'echo_message' && item.result?.content?.[0]?.text) {
+            return `${item.result.content[0].text}`;
+          }
+          if (
+            item.tool === 'get_weather_for_city' &&
+            item.result?.content?.[0]?.text
+          ) {
+            return `${item.result.content[0].text}`;
+          }
+          if (item.tool === 'get_alerts' && item.result?.content?.[0]?.text) {
+            return `Weather Alerts:\n${item.result.content[0].text}`;
+          }
+          return `Tool ${item.tool} result: ${JSON.stringify(item.result)}`;
+        })
+        .join('\n\n');
+    } else {
+      formattedMessage = 'No tool calls were executed.';
+    }
+
+    res.json({ message: formattedMessage });
   } catch (e) {
     console.error(e);
   }
-  res.json({ message: mcpResult.content[0].text });
+});
+
+router.get('/tools', async (req, res) => {
+  const mcpTools = await getToolsFromMcpServer();
+  res.json(mcpTools);
 });
 
 export default router;
