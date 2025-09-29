@@ -13,6 +13,19 @@ function isWeatherResponse(text) {
   );
 }
 
+function getToolUsageExamples(toolName) {
+  const examples = {
+    echo_message: ['Echo "Hello World"', 'Repeat "Testing" 3 times'],
+    calculate: ['Calculate 15 + 27', 'What is 100 divided by 4?'],
+    get_weather_for_city: [
+      `What's the weather in New York?`,
+      'Show me the forecast for Los Angeles',
+    ],
+    get_alerts: ['Show weather alerts for California', 'Get alerts for NY'],
+  };
+  return examples[toolName] || [];
+}
+
 const BASE_URL = process.env.REACT_APP_BASE_URL || '';
 
 export default function Chatbot() {
@@ -158,6 +171,22 @@ export default function Chatbot() {
                       <span className="tool-name">{tool.name}</span>
                       {tool.description && (
                         <p className="tool-description">{tool.description}</p>
+                      )}
+                      {getToolUsageExamples(tool.name) && (
+                        <div className="tool-usage">
+                          <h4 className="usage-title">Usage Examples:</h4>
+                          <ul className="usage-examples">
+                            {getToolUsageExamples(tool.name).map(
+                              (example, exIndex) => (
+                                <li key={exIndex} className="usage-example">
+                                  <code className="example-text">
+                                    {example}
+                                  </code>
+                                </li>
+                              )
+                            )}
+                          </ul>
+                        </div>
                       )}
                     </li>
                   ))}
