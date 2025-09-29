@@ -156,6 +156,23 @@ export default function WeatherDisplay({ response }) {
       return '🌤️'; // Default weather icon
     }
   }
+  // Group forecast data into day/night pairs
+  const groupedForecast = [];
+  for (let i = 0; i < weatherData.forecast.length; i += 2) {
+    if (i + 1 < weatherData.forecast.length) {
+      groupedForecast.push({
+        day: weatherData.forecast[i],
+        night: weatherData.forecast[i + 1],
+      });
+    } else {
+      // If odd number of periods, just add the last one
+      groupedForecast.push({
+        day: weatherData.forecast[i],
+        night: null,
+      });
+    }
+  }
+
   return (
     <div className="weather-display">
       {weatherData.location && (
@@ -164,21 +181,47 @@ export default function WeatherDisplay({ response }) {
         </div>
       )}
 
-      {weatherData.forecast.length > 0 && (
+      {groupedForecast.length > 0 && (
         <div className="weather-forecast-section">
           <h5>🌤️ Forecast</h5>
           <div className="forecast-cards">
-            {weatherData.forecast.map((period, index) => (
-              <div key={index} className="forecast-card">
-                <div className="forecast-header">
-                  <div className="forecast-period">{period.name}</div>
-                  <div className="forecast-icon">
-                    {getWeatherIcon(period.forecast)}
+            {groupedForecast.map((dayGroup, index) => (
+              <div key={index} className="forecast-day-group">
+                {/* Day card */}
+                <div className="forecast-card forecast-day">
+                  <div className="forecast-header">
+                    <div className="forecast-period">{dayGroup.day.name}</div>
+                    <div className="forecast-icon">
+                      {getWeatherIcon(dayGroup.day.forecast)}
+                    </div>
                   </div>
+                  <div className="forecast-temp">
+                    {dayGroup.day.temperature}
+                  </div>
+                  <div className="forecast-wind">{dayGroup.day.wind}</div>
+                  <div className="forecast-desc">{dayGroup.day.forecast}</div>
                 </div>
-                <div className="forecast-temp">{period.temperature}</div>
-                <div className="forecast-wind">{period.wind}</div>
-                <div className="forecast-desc">{period.forecast}</div>
+
+                {/* Night card */}
+                {dayGroup.night && (
+                  <div className="forecast-card forecast-night">
+                    <div className="forecast-header">
+                      <div className="forecast-period">
+                        {dayGroup.night.name}
+                      </div>
+                      <div className="forecast-icon">
+                        {getWeatherIcon(dayGroup.night.forecast)}
+                      </div>
+                    </div>
+                    <div className="forecast-temp">
+                      {dayGroup.night.temperature}
+                    </div>
+                    <div className="forecast-wind">{dayGroup.night.wind}</div>
+                    <div className="forecast-desc">
+                      {dayGroup.night.forecast}
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
           </div>

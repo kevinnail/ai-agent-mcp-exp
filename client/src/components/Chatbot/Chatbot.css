@@ -413,16 +413,22 @@
 
 .forecast-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
   margin-bottom: 15px;
+}
+
+.forecast-day-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .forecast-card {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
-  padding: 5px 5px 12px 5px;
+  border-radius: 6px;
+  padding: 8px 6px;
   backdrop-filter: blur(10px);
   transition: all 0.3s ease;
   animation: slideInUp 0.5s ease-out;
@@ -438,11 +444,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .forecast-period {
-  font-size: 0.95rem;
+  font-size: 0.8rem;
   font-weight: 600;
   color: white;
   opacity: 0.9;
@@ -481,6 +487,17 @@
   font-size: 0.85rem;
   color: rgba(255, 255, 255, 0.9);
   line-height: 1.3;
+}
+
+.forecast-day {
+  background: rgba(255, 255, 255, 0.12);
+  min-height: 160px;
+}
+
+.forecast-night {
+  background: rgba(255, 255, 255, 0.08);
+  opacity: 0.9;
+  min-height: 160px;
 }
 
 .alert-cards {
@@ -567,6 +584,10 @@
   .forecast-cards {
     grid-template-columns: 1fr;
     gap: 8px;
+  }
+
+  .forecast-day-group {
+    gap: 6px;
   }
 
   .forecast-card,
