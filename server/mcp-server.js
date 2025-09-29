@@ -177,8 +177,6 @@ function createServer() {
         const encodedLocation = encodeURIComponent(city);
         const geocodeUrl = `https://nominatim.openstreetmap.org/search?q=${encodedLocation}&format=json&limit=1`;
 
-        console.log('Geocoding URL:', geocodeUrl);
-
         const geocodeResponse = await fetch(geocodeUrl, {
           headers: {
             'User-Agent': USER_AGENT,
@@ -205,12 +203,6 @@ function createServer() {
         const latitude = parseFloat(result.lat);
         const longitude = parseFloat(result.lon);
         const displayName = result.display_name;
-
-        console.log('Geocoded coordinates:', {
-          latitude,
-          longitude,
-          displayName,
-        });
 
         // Now get weather forecast
         const pointsUrl = `${NWS_API_BASE}/points/${latitude.toFixed(4)},${longitude.toFixed(4)}`;

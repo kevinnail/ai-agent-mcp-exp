@@ -525,13 +525,13 @@
 
 .forecast-day {
   background: rgba(255, 255, 255, 0.12);
-  min-height: 160px;
+  min-height: 180px;
 }
 
 .forecast-night {
   background: rgba(255, 255, 255, 0.08);
   opacity: 0.9;
-  min-height: 160px;
+  min-height: 180px;
 }
 
 .alert-cards {
